@@ -1,0 +1,11 @@
+<h1>dashboard</h1>
+
+<button class="btn btn-info" ng-click="model.getProfile()">Get Profile</button>
+
+<div ng-if="model.data">
+    <form id="userProfile">
+        <div ng-repeat="(l, d) in model.data">
+            {{l}} : {{d}}
+        </div>
+    </form>
+</div>

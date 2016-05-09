@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" ng-app="LoginApp">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="libraries/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Login app</title>
+</head>
+<body>
+<div ng-controller="MainController as main">
+    <div ng-include="'views/header/header.view.html'"></div>
+    <div class="container">
+        <div class="col-md-8 col-md-offset-2" ng-view></div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.js"></script>
+<script src="libraries/ngStorage.js"></script>
+<script src="libraries/ui-bootstrap-tpls-1.2.5.js"></script>
+<script src="libraries/angular-ui-validate.min.js"></script>
+<script src="app.js"></script>
+<script src="views/main.controller.js"></script>
+<script src="views/login/login.controller.js"></script>
+<script src="views/lesson/lesson.controller.js"></script>
+<script src="views/redirect/redirect.controller.js"></script>
+<script src="views/dashboard/dashboard.controller.js"></script>
+<script src="services/user.service.client.js"></script>
+<script src="services/lesson.service.client.js"></script>
+<script src="services/auth.service.client.js"></script>
+<script src="config.js"></script>
+</body>
+</html>

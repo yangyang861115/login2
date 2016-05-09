@@ -1,0 +1,39 @@
+<div id="content">
+    <pre>{{model.lesson|json}}</pre>
+
+    <pre>{{model.form|json}}</pre>
+
+    <div id="lesson" class="lesson">
+        <div ng-bind-html="renderHtml(model.lesson.bodyTxt)"
+             compile-template>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="row lesson-footer">
+            <div class="col-xs-1">
+                        <span id="btn-prv" ng-click="model.submit('btn-prv')" ng-hide="model.lesson.curpg==1">
+                            <a><i class="fa fa-chevron-left fa-2x"></i></a>
+                        </span>
+            </div>
+            <div class=col-xs-10>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-info" role="progressbar"
+                         aria-valuenow="{{model.lesson.curpg}}"
+                         aria-valuemin="0" aria-valuemax="{{model.lesson.totpg}}"
+                         ng-style="{width : ( model.lesson.curpg*100/model.lesson.totpg + '%' ) }">
+                        <div class="sr-only">
+                            {{model.lesson.curpg*100/model.lesson.totpg}}% Complete
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1">
+                        <span id="btn-next" class="pull-right" ng-click="model.submit('btn-next')"
+                              ng-hide="model.lesson.curpg==model.lesson.totpg">
+                            <a><i class="fa fa-chevron-right fa-2x"></i></a>
+                        </span>
+            </div>
+        </div>
+    </div>
+</div>
