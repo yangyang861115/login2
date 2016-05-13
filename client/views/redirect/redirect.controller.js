@@ -13,7 +13,7 @@
             Auth.saveToken($routeParams.tokenstring, function(){
                 User.validateToken()
                     .then(function(response) {
-                        console.log(response.data);
+
                         if (response.data.success) {
                             console.log("login successfully!");
                             window.location = "#/dashboard";

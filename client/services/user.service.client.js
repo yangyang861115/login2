@@ -13,7 +13,8 @@
             loginBySocialMedia: loginBySocialMedia,
             getCodeByEmail: getCodeByEmail,
             validateToken: validateToken,
-            getProfile: getProfile
+            getProfile: getProfile,
+            updateProfile: updateProfile
         }
 
 
@@ -46,6 +47,11 @@
         function getProfile(){
             var url = "https://crucore.com/api.php?a=profile";
             return $http.get(url);
+        }
+
+        function updateProfile(data){
+            var url = "https://crucore.com/api.php?a=profile";
+            return $http.post(url, data);
         }
 
         return api;

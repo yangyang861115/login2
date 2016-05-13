@@ -23,7 +23,7 @@
         };
 
         function saveToken (token, callback) {
-            $window.localStorage['jwtToken'] = token;
+            $window.sessionStorage['jwtToken'] = token;
             if(callback) {
                 callback();
             }
@@ -31,7 +31,7 @@
         };
 
         function  getToken() {
-            return $window.localStorage['jwtToken'];
+            return $window.sessionStorage['jwtToken'];
         };
 
 
@@ -48,7 +48,7 @@
         };
 
         function logout() {
-            $window.localStorage.removeItem('jwtToken');
+            $window.sessionStorage.removeItem('jwtToken');
             window.location = "#/login";
         }
 
