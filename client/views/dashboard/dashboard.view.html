@@ -6,7 +6,7 @@
     <form class="form-horizontal" id="userProfile" name="userFm" ng-submit="model.updateProfile(model.formData)" novalidate>
         <div class="form-group" ng-repeat="(i, line) in model.data">
 
-            <label for={{line.rowNum}} class="col-sm-2 control-label">{{line.label}}</label>
+            <label for={{line.rowNum}} class="col-sm-2 control-label">{{line.label}} <span ng-if="line.reqd">*</span></label>
 
             <!--display-->
             <div class="col-sm-10" ng-if="line.type == 'display'">
@@ -24,8 +24,8 @@
                 </span>
             </div>
 
-            <!--text, date-->
-            <div class="col-sm-10" ng-if="line.type == 'text' || line.type == 'date'">
+            <!--text-->
+            <div class="col-sm-10" ng-if="line.type == 'text'">
                 <input type={{line.type}} name={{line.name}} class="form-control" id={{line.rowNum}}
                        ng-required={{line.reqd}}
                        ng-model="model.formData[line.name]" ng-init="model.formData[line.name]=line.value" maxlength="{{line.max}}">
@@ -33,6 +33,32 @@
                 <p class="help-block" ng-show="line.max">maximum length is {{line.max}}</p>
                 <span ng-show="userFm[line.name].$dirty" class="error">
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
+                </span>
+            </div>
+
+            <!--date-->
+            <div class="col-sm-10" ng-if="line.type == 'date'">
+                <div class="input-group">
+                    <input type="text" class="form-control" name={{line.name}} id={{line.rowNum}} uib-datepicker-popup
+                           ng-model="model.formData[line.name]" ng-init="model.formData[line.name]= (line.value ? model.convertToDate(line.value): '')"
+
+                           ui-validate="{outOfBounds : 'model.checkDateLimits($value,model.datereq[line.name].dateOptions.minDate, model.datereq[line.name].dateOptions.maxDate)' }"
+                           is-open="model.datereq[line.name].opened" datepicker-options="model.datereq[line.name].dateOptions"
+                           ng-required={{line.reqd}} close-text="Close" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="model.open(line.name)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+
+
+                <!--<input type={{line.type}} name={{line.name}} class="form-control" id={{line.rowNum}}
+                       ng-required={{line.reqd}}
+                       ng-model="model.formData[line.name]" ng-init="model.formData[line.name]=model.convertToDate(line.value)">-->
+                <p class="help-block">{{line.extra}}</p>
+                <span ng-show="userFm[line.name].$dirty" class="error">
+                    <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
+                    <span ng-show="userFm[line.name].$error.date">Not a valid date.(YYYY-MM-DD)</span>
+                    <span ng-show="userFm[line.name].$error.outOfBounds">Date selected is out of range.</span>
                 </span>
             </div>
 
@@ -93,3 +119,5 @@
 </div>
 
 <div ng-if="model.msg">{{model.msg}}</div>
+
+
