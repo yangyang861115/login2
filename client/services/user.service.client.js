@@ -10,8 +10,8 @@
         var api = {
             signup: signup,
             signin: signin,
-            loginBySocialMedia: loginBySocialMedia,
             getCodeByEmail: getCodeByEmail,
+            subEmailCode: subEmailCode,
             validateToken: validateToken,
             getProfile: getProfile,
             updateProfile: updateProfile
@@ -28,28 +28,33 @@
             return $http.post(url, data);
         }
 
-        function loginBySocialMedia(method){
-            var url = "https://crucore.com/index.php?a=social_" + method;
-            return $http.post(url);
-        }
-
 
         function getCodeByEmail(email) {
+            var data = {
+                email: email
+            };
             var url = "https://crucore.com/api.php?a=sendEmail";
-            return $http.post(url, email);
+            return $http.post(url, data);
         }
 
-        function validateToken(){
+        function subEmailCode(data) {
+            var url = "https://crucore.com/api.php?a=entercode";
+            return $http.post(url, data);
+        }
+
+
+
+        function validateToken() {
             var url = "https://crucore.com/api.php?a=validate";
             return $http.get(url);
         }
 
-        function getProfile(){
+        function getProfile() {
             var url = "https://crucore.com/api.php?a=profile";
             return $http.get(url);
         }
 
-        function updateProfile(data){
+        function updateProfile(data) {
             var url = "https://crucore.com/api.php?a=profile";
             return $http.post(url, data);
         }

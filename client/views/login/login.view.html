@@ -3,7 +3,6 @@
         <div class="container">
             <h2>Login</h2>
             <h3>Choose one of these login methods</h3>
-            <h4><a href="https://crucore.com/api.php?a=social_fb">FB</a> &bull; <a href="https://crucore.com/api.php?a=social_gm">GM</a> &bull; <a href="https://crucore.com/api.php?a=social_tk">Key</a></h4>
         </div>
     </div>
 
@@ -18,17 +17,23 @@
                                                   ng-class="{'fa-minus': model.status.isFirstOpen, 'fa-plus': !model.status.isFirstOpen}"></i>
                         </div>
                     </uib-accordion-heading>
-                    <div class="col-md-6 col-md-offset-3">
+                    <div class="col-md-8 col-md-offset-2">
                         <div class="text-center">
-                            <a href="https://crucore.com/api.php?a=social_fb"><button class="btn btn-default btn-social w300 center-block"><i
-                                    class="fa fa-facebook"></i> | Connect with Facebook
-                            </button></a>
-                            <a href="https://crucore.com/api.php?a=social_gm"><button class="btn btn-default btn-social w300 center-block"><i
-                                    class="fa fa-google-plus"></i> | Connect with Google Plus
-                            </button></a>
-                            <a href="https://crucore.com/api.php?a=social_tk"><button class="btn btn-default btn-social w300 center-block"><i
-                                    class="fa fa-key"></i> | Connect with The Key
-                            </button></a>
+                            <a href="https://crucore.com/api.php?a=social_fb">
+                                <button class="btn btn-default btn-social w300 center-block"><i
+                                        class="fa fa-facebook"></i> | Connect with Facebook
+                                </button>
+                            </a>
+                            <a href="https://crucore.com/api.php?a=social_gm">
+                                <button class="btn btn-default btn-social w300 center-block"><i
+                                        class="fa fa-google-plus"></i> | Connect with Google Plus
+                                </button>
+                            </a>
+                            <a href="https://crucore.com/api.php?a=social_tk">
+                                <button class="btn btn-default btn-social w300 center-block"><i
+                                        class="fa fa-key"></i> | Connect with The Key
+                                </button>
+                            </a>
                         </div>
                     </div>
                 </uib-accordion-group>
@@ -42,7 +47,7 @@
                                                  ng-class="{' fa-minus': model.status.isSecondOpen, 'fa-plus': !model.status.isSecondOpen}"></i>
                         </div>
                     </uib-accordion-heading>
-                    <div class="col-md-6 col-md-offset-3">
+                    <div class="col-md-8 col-md-offset-2">
                         <form name="pdForm" class="form" id="ue_pd_fm" novalidate>
                             <div class="form-group has-feedback">
                                 <div class="input-group">
@@ -53,7 +58,7 @@
                                     <span class="input-group-addon">required</span>
                                 </div>
                                 <small class="help-block"
-                                       ng-show="pdForm.username.$dirty && pdForm.username.$error.required">
+                                       ng-show="pdForm.username.$touched && pdForm.username.$error.required">
                                     username is required for login
                                 </small>
                             </div>
@@ -67,7 +72,7 @@
                                     <span class="input-group-addon">required</span>
                                 </div>
                                 <small class="help-block"
-                                       ng-show="pdForm.password.$dirty && pdForm.password.$error.required">
+                                       ng-show="pdForm.password.$touched && pdForm.password.$error.required">
                                     password is required for login
                                 </small>
                                 <small class="help-block"
@@ -100,39 +105,61 @@
                                                   ng-class="{'fa-minus': model.status.isThirdOpen, 'fa-plus': !model.status.isThirdOpen}"></i>
                         </div>
                     </uib-accordion-heading>
-                    <div class="col-md-6 col-md-offset-3">
+                    <div class="col-md-8 col-md-offset-2">
                         <div class="panel-body" id="send_email">
-                            <p>This option sends a code to your email which is used to verify your identity and grant
-                                access.</p>
+                            <div ng-hide="main.codeSent">
+                                <p>This option sends a code to your email which is used to verify your identity and
+                                    grant
+                                    access.</p>
+                            </div>
                             <form name="emlForm" id="send_email_form" novalidate>
-                                <div class="form-group has-feedback">
-                                    <div class="input-group">
-                                        <label class="sr-only" for="email">Email</label>
-                                        <input ng-model="model.emlForm.email" type="email" name="email" id="email"
-                                               placeholder="Enter Email Address" ng-pattern="model.EMAIL_PATTERN"
-                                               class="form-control" required>
-                                        <span class="input-group-addon">required</span>
+                                <div ng-hide="main.codeSent">
+                                    <div class="form-group has-feedback">
+                                        <div class="input-group">
+                                            <label class="sr-only" for="email">Email</label>
+                                            <input ng-model="model.emlForm.email" type="email" name="email" id="email"
+                                                   placeholder="Enter Email Address" ng-pattern="model.EMAIL_PATTERN"
+                                                   class="form-control" required>
+                                            <span class="input-group-addon">required</span>
+                                        </div>
+                                        <small class="help-block"
+                                               ng-show="emlForm.email.$touched && emlForm.email.$error.required">The Email is required and cannot be empty
+                                        </small>
+                                        <small class="help-block"
+                                               ng-show="emlForm.email.$dirty && emlForm.email.$error.pattern">The input is not a valid email address
+                                        </small>
                                     </div>
+                                    <div class="form-group text-center">
+                                        <input ng-click="main.getCodeByEmail(model.emlForm.email)" type="button"
+                                               ng-disabled="emlForm.$invalid"
+                                               id="sgend_email_btn"
+                                               value="Send Code"
+                                               class="btn center-block btn-default">
+                                    </div>
+                                    <div class="help-block" ng-show="main.emlErrorMsg"
+                                         ng-bind-html="main.renderHtml(main.emlErrorMsg)"></div>
+                                </div>
+                                <div class="form-group text-center" ng-if="main.codeSent">
+                                    <h1>Validation Code</h1>
+                                    <p>Your account is protected from unauthorized access. We just sent a six-digit code
+                                        to your email address.
+                                        It may take a few minutes, but when it arrives, please enter it below.</p>
+                                    <input type="text" ng-model="model.emlForm.sixcnt"  name="sixcnt"
+                                           ng-change="main.subEmailCode(model.emlForm)"  maxlength="6"
+                                           ng-pattern="model.SIXCNT_PATTERN"
+                                           placeholder="Six Digit Code" class="form-control" required>
                                     <small class="help-block"
-                                           ng-show="emlForm.email.$dirty && emlForm.email.$error.required">The Email is
-                                        required and cannot be
-                                        empty
+                                           ng-show="emlForm.sixcnt.$touched && emlForm.sixcnt.$error.required">
+                                        Six digit code is required and cannot be empty.
                                     </small>
                                     <small class="help-block"
-                                           ng-show="emlForm.email.$dirty && emlForm.email.$error.pattern">The input is
-                                        not a valid email
-                                        address
+                                           ng-show="emlForm.sixcnt.$dirty && emlForm.sixcnt.$error.pattern">
+                                        Please enter a valid number
                                     </small>
+                                    <p class="small"><a href="" ng-click="main.getCodeByEmail(model.emlForm.email)">resend code</a> if you didn't receive an email.</p>
+                                    <div class="help-block" ng-show="main.emlcodeErrorMsg"
+                                         ng-bind-html="main.renderHtml(main.emlcodeErrorMsg)"></div>
                                 </div>
-                                <div class="form-group text-center">
-                                    <input ng-click="main.getCodeByEmail(model.emlForm.email)" type="button"
-                                           ng-disabled="emlForm.$invalid"
-                                           id="sgend_email_btn"
-                                           value="Send Code"
-                                           class="btn center-block btn-default">
-                                </div>
-                                <div class="help-block" ng-show="emlErrorMsg"
-                                     ng-bind-html="main.renderHtml(emlErrorMsg)"></div>
                             </form>
                         </div>
                     </div>
@@ -147,7 +174,7 @@
                                                           ng-class="{'fa-minus': model.status.isFourthOpen, 'fa-plus': !model.status.isFourthOpen}"></i>
                         </div>
                     </uib-accordion-heading>
-                    <div class="col-md-6 col-md-offset-3">
+                    <div class="col-md-8 col-md-offset-2">
                         <form name="usrForm" class="form" id="profile" novalidate>
                             <div class="form-group has-feedback">
                                 <div class="input-group">
@@ -262,7 +289,8 @@
                             </div>
                             <div class="text-center">
                                 <div class="form-group">
-                                    <input type="submit" ng-disabled="true" class="btn btn-default" value="Start your Personal Study">
+                                    <input type="submit" ng-disabled="true" class="btn btn-default"
+                                           value="Start your Personal Study">
                                 </div>
                                 <div class="form-group">
                                     <input type="submit" class="btn btn-default" value="Lead a Group Study">

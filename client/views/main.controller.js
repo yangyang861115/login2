@@ -7,8 +7,9 @@
         .controller("MainController", MainController);
 
     function MainController($scope, $localStorage, User, Auth, $rootScope,$sce) {
-        var self = this;
-        self.isAuthed = function () {
+        var vm = this;
+
+        vm.isAuthed = function () {
             return Auth.isAuthed();
         }
 
@@ -16,7 +17,7 @@
             window.location = "#/dashboard";
         }
 
-        self.signin = function (formData) {
+        vm.signin = function (formData) {
             User.signin(formData)
                 .then(function (response) {
                     if (response.data.success) {
@@ -30,21 +31,38 @@
                 });
         };
 
-        self.getCodeByEmail = function (email) {
-            console.log(email);
-            Auth.getCodeByEmail(email)
+        vm.getCodeByEmail = function (email) {
+            User.getCodeByEmail(email)
                 .then(function (response) {
-                    console.log(response.data);
                     if (response.data.success) {
-                        console.log("get email code successfully!");
+                        vm.codeSent = true;
                     }
                     else {
-                        $scope.emlErrorMsg = response.data.error;
+                        vm.emlErrorMsg = response.data.error;
                     }
                 });
         }
 
-        $scope.signup = function () {
+        vm.subEmailCode = function(data) {
+            if(data.sixcnt && data.sixcnt.toString().length == 6) {
+                console.log(data);
+                User.subEmailCode(data)
+                    .then(function (response) {
+                        console.log(response.data);
+                        if (response.data.success) {
+                            console.log("Submit email code successfully!");
+                            var token = response.data.token;
+                            successAuth($scope, token);
+                            vm.codeSent = false;
+                        }
+                        else {
+                            vm.emlcodeErrorMsg = response.data.msg;
+                        }
+                    });
+            }
+        }
+
+        vm.signup = function () {
             var formData = {
                 email: $scope.email,
                 password: $scope.password
@@ -57,7 +75,7 @@
 
 
 
-        self.loginBySocialMedia = function(method) {
+        vm.loginBySocialMedia = function(method) {
             console.log(method);
             User.loginBySocialMedia(method)
                 .then(function(response) {
@@ -65,11 +83,11 @@
                 });
         }
 
-        self.logout = function () {
+        vm.logout = function () {
             Auth.logout();
         }
 
-        self.renderHtml = function (html_code) {
+        vm.renderHtml = function (html_code) {
             return $sce.trustAsHtml(html_code);
         }
     }

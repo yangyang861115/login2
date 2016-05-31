@@ -20,6 +20,7 @@
         vm.PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{7,}$/;
         vm.EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
         vm.USERNAME_PATTERN= /^[a-zA-Z0-9\.@_]{6,30}$/;
+        vm.SIXCNT_PATTERN = /^[0-9]{6,6}$/;
 
 
         //vm.getCodeByEmail = getCodeByEmail;
