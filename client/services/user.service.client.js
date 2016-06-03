@@ -6,25 +6,33 @@
         .module("LoginApp")
         .factory('User', user);
     function user($http) {
+        var BASE_URL = "https://crucore.com/api.php?a=";
 
         var api = {
-            signup: signup,
-            signin: signin,
+            signUp: signUp,
+            checkEmail: checkEmail,
+            signIn: signIn,
             getCodeByEmail: getCodeByEmail,
             subEmailCode: subEmailCode,
             validateToken: validateToken,
             getProfile: getProfile,
             updateProfile: updateProfile
+        };
+
+
+        function signUp(data) {
+            var url = BASE_URL + "newuser";
+            console.log(data);
+            return $http.post(url, data);
         }
 
-
-        function signup(data, success, error) {
-            var url = "no url yet";
-            $http.post(url, data).success(success).error(error)
+        function checkEmail(data) {
+            var url = BASE_URL + "popfind";
+            return $http.post(url, data);
         }
 
-        function signin(data) {
-            var url = "https://crucore.com/api.php?a=login";
+        function signIn(data) {
+            var url = BASE_URL + "login";
             return $http.post(url, data);
         }
 
@@ -33,29 +41,29 @@
             var data = {
                 email: email
             };
-            var url = "https://crucore.com/api.php?a=sendEmail";
+            var url = BASE_URL + "sendEmail";
             return $http.post(url, data);
         }
 
         function subEmailCode(data) {
-            var url = "https://crucore.com/api.php?a=entercode";
+            var url = BASE_URL + "entercode";
             return $http.post(url, data);
         }
 
 
 
         function validateToken() {
-            var url = "https://crucore.com/api.php?a=validate";
+            var url = BASE_URL + "validate";
             return $http.get(url);
         }
 
         function getProfile() {
-            var url = "https://crucore.com/api.php?a=profile";
+            var url = BASE_URL + "profile";
             return $http.get(url);
         }
 
         function updateProfile(data) {
-            var url = "https://crucore.com/api.php?a=profile";
+            var url = BASE_URL + "profile";
             return $http.post(url, data);
         }
 

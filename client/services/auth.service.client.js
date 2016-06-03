@@ -12,7 +12,10 @@
             saveToken: saveToken,
             getToken: getToken,
             isAuthed: isAuthed,
-            logout: logout
+            logout: logout,
+            saveRememberMeCookie: saveRememberMeCookie,
+            deleteRememberMeCookie: deleteRememberMeCookie,
+            validateRememberMeCookie: validateRememberMeCookie
         }
 
         // Add JWT methods here
@@ -22,23 +25,21 @@
             return JSON.parse($window.atob(base64));
         };
 
-        function saveToken (token, callback) {
+        function saveToken(token, callback) {
             $window.sessionStorage['jwtToken'] = token;
-            if(callback) {
+            if (callback) {
                 callback();
             }
-
         };
 
-        function  getToken() {
+        function getToken() {
             return $window.sessionStorage['jwtToken'];
         };
 
 
-
-        function isAuthed () {
+        function isAuthed() {
             var token = getToken();
-            if(token) {
+            if (token) {
                 //var params = self.parseJwt(token);
                 //return Math.round(new Date().getTime() / 1000) <= params.exp;
                 return true;
@@ -49,7 +50,31 @@
 
         function logout() {
             $window.sessionStorage.removeItem('jwtToken');
+            deleteRememberMeCookie();
             window.location = "#/login";
+        }
+
+        function saveRememberMeCookie(token) {
+            var cookie = "remember-me=" + token + ";";
+            var date = new Date();
+            date.setDate(date.getDate() + 7);
+            cookie += 'expires=' + date.toString() + ';';
+            document.cookie = cookie;
+            console.log(document.cookie);
+        }
+
+        function deleteRememberMeCookie() {
+            var cookie = "remember-me=;";
+            cookie += 'expires=' + (new Date()).toString() + ';';
+            document.cookie = cookie;
+        }
+
+        function validateRememberMeCookie() {
+            var cookie = document.cookie;
+            if (cookie && cookie.indexOf('remember-me') != -1) {
+                return true;
+            }
+            return false;
         }
 
         return api;

@@ -6,27 +6,36 @@
         .module("LoginApp")
         .controller("MainController", MainController);
 
-    function MainController($scope, $localStorage, User, Auth, $rootScope,$sce) {
+    function MainController(User, Auth ,$sce) {
         var vm = this;
 
         vm.isAuthed = function () {
             return Auth.isAuthed();
-        }
+        };
 
-        function successAuth($scope, token) {
+        function successAuth() {
             window.location = "#/dashboard";
         }
 
-        vm.signin = function (formData) {
-            User.signin(formData)
+        //remember me cookie
+        function saveRememberMeCookie(remember, token){
+            if(remember) {
+                Auth.saveRememberMeCookie(token);
+            }
+        }
+
+        vm.signIn = function (formData) {
+            console.log(formData);
+            User.signIn(formData)
                 .then(function (response) {
                     if (response.data.success) {
                         console.log("login successfully!");
                         var token = response.data.token;
-                        successAuth($scope, token);
+                        saveRememberMeCookie(formData.remember, token);
+                        successAuth();
                     }
                     else {
-                        $scope.pdErrorMsg = response.data.error;
+                        vm.pdErrorMsg = response.data.error;
                     }
                 });
         };
@@ -41,18 +50,17 @@
                         vm.emlErrorMsg = response.data.error;
                     }
                 });
-        }
+        };
 
         vm.subEmailCode = function(data) {
             if(data.sixcnt && data.sixcnt.toString().length == 6) {
-                console.log(data);
                 User.subEmailCode(data)
                     .then(function (response) {
                         console.log(response.data);
                         if (response.data.success) {
                             console.log("Submit email code successfully!");
                             var token = response.data.token;
-                            successAuth($scope, token);
+                            successAuth();
                             vm.codeSent = false;
                         }
                         else {
@@ -60,32 +68,46 @@
                         }
                     });
             }
-        }
+        };
 
-        vm.signup = function () {
-            var formData = {
-                email: $scope.email,
-                password: $scope.password
-            };
+        vm.checkEmail = function(emailData) {
+            if(emailData.$valid){
+                var data = {
+                    email: emailData.$viewValue
+                };
+                User.checkEmail(data)
+                    .then(function (response) {
+                        if (response.data.success) {
+                           //do nothing
+                        }
+                        else {
+                            vm.emailExists = !response.data.success;
+                        }
+                    });
+            }
+        };
 
-            Auth.signup(formData, successAuth, function (res) {
-                $rootScope.error = res.error || 'Failed to sign up.';
-            })
+        vm.signUp = function (formData) {
+            console.log(formData);
+            User.signUp(formData)
+                .then(function (response) {
+                    console.log(response.data);
+                    if (response.data.success) {
+                        console.log("login successfully!");
+                        var token = response.data.token;
+                        saveRememberMeCookie(formData.remember, token);
+                        successAuth();
+                    }
+                    else {
+                        vm.newUsrErrorMsg = response.data.msg;
+                    }
+                });
         };
 
 
-
-        vm.loginBySocialMedia = function(method) {
-            console.log(method);
-            User.loginBySocialMedia(method)
-                .then(function(response) {
-                    console.log(response.data);
-                });
-        }
-
         vm.logout = function () {
             Auth.logout();
-        }
+        };
 
         vm.renderHtml = function (html_code) {
             return $sce.trustAsHtml(html_code);
