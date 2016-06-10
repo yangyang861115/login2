@@ -48,7 +48,9 @@
             return {
                 // automatically attach Authorization header
                 request: function (config) {
-                    var token = Auth.getToken();
+                    var token = $window.sessionStorage['jwtToken'];
+                    //console.log("the token in the header is ");
+                    //console.log(token);
                     if (token) {
                         config.headers.Authorization = token;
                     }
@@ -77,12 +79,15 @@
     function restrict($rootScope, $location, $window, Auth, User) {
         $rootScope.$on("$routeChangeStart", function (event, next) {
             if (!Auth.isAuthed()) {
+                console.log("You don't have a token in session storage");
                 if (next.templateUrl === "views/dashboard/dashboard.view.html") {
                     $location.path("/login");
                 } else if (next.templateUrl === "views/login/login.view.html") {
+                    console.log("checking cookie..........");
                     checkLoginAgain();
                 }
             } else {
+                console.log("You  have a token in session storage");
                 if (next.templateUrl === "views/login/login.view.html") {
                     $location.path("/dashboard");
                 }
@@ -92,16 +97,20 @@
         function checkLoginAgain() {
             var cookieState = Auth.validateRememberMeCookie();
             if (cookieState) {
+                var token;
                 console.log("this is a valid cookie");
-                var cookie = document.cookie;
-                var token = cookie.split("=")[1];
-                //validate token
-
+                var cookielist = document.cookie.split(';');
+                for(var i in cookielist) {
+                    if(cookielist[i].indexOf('remember-me') != -1) {
+                        //get the token from the cookie list
+                        token = cookielist[i].split('=')[1];
+                    }
+                }
 
                 Auth.saveToken(token, function () {
                     User.validateToken()
                         .then(function(response){
-                            if (response.data.success) {
+                            if (response && response.data.success) {
                                 console.log("login successfully by token in the cookie!");
                                 window.location = "#/dashboard";
                             }

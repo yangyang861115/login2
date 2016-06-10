@@ -4,9 +4,56 @@
 (function () {
     angular
         .module("LoginApp")
-        .controller("MainController", MainController);
+        .controller("MainController", MainController)
+        .directive('username', function ($q, $timeout, User) {
+            return {
+                require: 'ngModel',
+                scope: {
+                    "recno": "=recno"
+                },
+                link: function (scope, elm, attrs, ctrl) {
 
-    function MainController(User, Auth ,$sce) {
+                    ctrl.$asyncValidators.username = function (modelValue, viewValue) {
+
+                        if (ctrl.$isEmpty(modelValue)) {
+                            // consider empty model valid
+                            return $q.when();
+                        }
+
+                        var def = $q.defer();
+
+                        $timeout(function () {
+                            // Mock a delayed response
+                            if(modelValue && modelValue.length >= 6 && modelValue.length <= 30) {
+                                var data = {
+                                    username: modelValue
+
+                                }
+                                if (scope.recno) {
+                                    data.recno = scope.recno;
+                                }
+                                User.checkEmail(data)
+                                    .then(function (response) {
+                                        if (response.data.success) {
+                                            //do nothing
+                                            def.resolve();
+                                        }
+                                        else {
+                                            def.reject();
+                                        }
+                                    });
+                            } else {
+                                def.resolve();
+                            }
+                        }, 2000);
+
+                        return def.promise;
+                    };
+                }
+            };
+        });
+
+    function MainController(User, Auth, $sce) {
         var vm = this;
 
         vm.isAuthed = function () {
@@ -18,8 +65,8 @@
         }
 
         //remember me cookie
-        function saveRememberMeCookie(remember, token){
-            if(remember) {
+        function saveRememberMeCookie(remember, token) {
+            if (remember) {
                 Auth.saveRememberMeCookie(token);
             }
         }
@@ -52,8 +99,8 @@
                 });
         };
 
-        vm.subEmailCode = function(data) {
-            if(data.sixcnt && data.sixcnt.toString().length == 6) {
+        vm.subEmailCode = function (data) {
+            if (data.sixcnt && data.sixcnt.toString().length == 6) {
                 User.subEmailCode(data)
                     .then(function (response) {
                         console.log(response.data);
@@ -70,15 +117,15 @@
             }
         };
 
-        vm.checkEmail = function(emailData) {
-            if(emailData.$valid){
+        vm.checkEmail = function (emailData) {
+            if (emailData.$valid) {
                 var data = {
                     email: emailData.$viewValue
                 };
                 User.checkEmail(data)
                     .then(function (response) {
                         if (response.data.success) {
-                           //do nothing
+                            //do nothing
                         }
                         else {
                             vm.emailExists = !response.data.success;
@@ -86,6 +133,32 @@
                     });
             }
         };
+
+        //vm.checkUsername = function (formname, username, recno) {
+        //
+        //    var result;
+        //    //if (username && username.length >= 6 && username.length <= 30) {
+        //    var data = {
+        //        username: username
+        //    };
+        //    if (recno) {
+        //        data.recno = recno;
+        //    }
+        //
+        //    User.checkUsername(data)
+        //        .then(function (response) {
+        //            if (response.data.success) {
+        //                //do nothing
+        //            } else {
+        //                formname.username.$invalid = true;
+        //                formname.username.$valid = false;
+        //                formname.username.$error.validator = true;
+        //                formname.username.$setValidity('validator', true);
+        //                console.log("checking.....");
+        //                console.log(formname.username);
+        //            }
+        //        });
+        //};
 
         vm.signUp = function (formData) {
             console.log(formData);
@@ -113,4 +186,5 @@
             return $sce.trustAsHtml(html_code);
         }
     }
+
 })();

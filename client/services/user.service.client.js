@@ -5,20 +5,29 @@
     angular
         .module("LoginApp")
         .factory('User', user);
-    function user($http) {
+    function user($http, Auth) {
         var BASE_URL = "https://crucore.com/api.php?a=";
 
         var api = {
             signUp: signUp,
             checkEmail: checkEmail,
+            checkUsername: checkUsername,
             signIn: signIn,
             getCodeByEmail: getCodeByEmail,
             subEmailCode: subEmailCode,
             validateToken: validateToken,
             getProfile: getProfile,
-            updateProfile: updateProfile
+            updateProfile: updateProfile,
+            //getUserId: getUserId
         };
 
+
+        //function getUserId() {
+        //    var token = $window.sessionStorage['jwtToken'];
+        //    var part = Auth.parseJwt(token);
+        //    return part.
+        //
+        //}
 
         function signUp(data) {
             var url = BASE_URL + "newuser";
@@ -27,6 +36,11 @@
         }
 
         function checkEmail(data) {
+            var url = BASE_URL + "popfind";
+            return $http.post(url, data);
+        }
+
+        function checkUsername(data) {
             var url = BASE_URL + "popfind";
             return $http.post(url, data);
         }

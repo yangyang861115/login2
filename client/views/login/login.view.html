@@ -234,10 +234,16 @@
                                     <label class="sr-only" for="nusername">Username</label>
                                     <input ng-model="model.usrForm.username" type="text" name="username" id="nusername"
                                            placeholder="Username" ng-minlength="6" ng-maxlength="30"
-                                           ng-pattern="model.USERNAME_PATTERN"
-                                           class="form-control" required>
+                                           ng-pattern="model.USERNAME_PATTERN" class="form-control" required
+                                           username>
                                     <span class="input-group-addon">required</span>
                                 </div>
+                                <span ng-show="usrForm.username.$dirty && usrForm.username.$pending.username">Checking if this name is available...</span>
+                                <small class="help-block"
+                                       ng-show="usrForm.username.$error.username">
+                                    Username already exists! Please use another username.
+                                </small>
+
                                 <small class="help-block"
                                        ng-show="usrForm.username.$dirty && usrForm.username.$error.required">
                                     username is required for login
@@ -280,7 +286,7 @@
                                     <span class="input-group-addon">required</span>
                                 </div>
                                 <small class="help-block"
-                                       ng-show="usrForxm.confirmPassword.$dirty && usrForm.confirmPassword.$error.required">
+                                       ng-show="usrForm.confirmPassword.$dirty && usrForm.confirmPassword.$error.required">
                                     Confirm password is required
                                 </small>
                                 <small class="help-block"

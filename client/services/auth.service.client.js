@@ -60,7 +60,6 @@
             date.setDate(date.getDate() + 7);
             cookie += 'expires=' + date.toString() + ';';
             document.cookie = cookie;
-            console.log(document.cookie);
         }
 
         function deleteRememberMeCookie() {
