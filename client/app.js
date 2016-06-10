@@ -3,5 +3,5 @@
  */
 (function(){
     angular
-        .module("LoginApp", ['ngRoute','ngStorage', 'ui.bootstrap', 'ui.validate', 'angularValidator']);
+        .module("LoginApp", ['ngRoute','ngStorage', 'ui.bootstrap', 'ui.validate']);
 })();

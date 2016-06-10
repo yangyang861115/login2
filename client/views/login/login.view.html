@@ -235,13 +235,18 @@
                                     <input ng-model="model.usrForm.username" type="text" name="username" id="nusername"
                                            placeholder="Username" ng-minlength="6" ng-maxlength="30"
                                            ng-pattern="model.USERNAME_PATTERN" class="form-control" required
-                                           username>
+                                           username email="model.usrForm.email">
                                     <span class="input-group-addon">required</span>
                                 </div>
                                 <span ng-show="usrForm.username.$dirty && usrForm.username.$pending.username">Checking if this name is available...</span>
-                                <small class="help-block"
-                                       ng-show="usrForm.username.$error.username">
-                                    Username already exists! Please use another username.
+                                <small class="help-block" ng-show="usrForm.username.$error.username">
+                                    <span ng-if="main.isEmail(usrForm.username.$viewValue)">
+                                        If you want to use an email address as your username,
+                                        please use the same email address above!
+                                    </span>
+                                    <span ng-if="!main.isEmail(usrForm.username.$viewValue)">
+                                        Username already exists! Please use another username.
+                                    </span>
                                 </small>
 
                                 <small class="help-block"

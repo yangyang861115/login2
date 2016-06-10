@@ -152,11 +152,18 @@
                                ng-model="model.formData.username"
                                ng-init="model.formData['username']=model.userninfo.username"
                                ng-minlength="6" ng-maxlength="30" ng-pattern="model.USERNAME_PATTERN"
-                               recno="model.formData.recno" username>
+                               recno="model.formData.recno"  email="model.formData.email" username>
+
                         <span ng-show="userFm.username.$dirty && userFm.username.$pending.username">Checking if this name is available...</span>
                         <small class="help-block"
                                ng-show="userFm.username.$error.username">
+                        <span ng-if="main.isEmail(userFm.username.$viewValue)">
+                            If you want to use an email address as your username,
+                            please use the same email address above!
+                        </span>
+                        <span ng-if="!main.isEmail(userFm.username.$viewValue)">
                             Username already exists! Please use another username.
+                        </span>
                         </small>
                         <small class="help-block"
                                ng-show="userFm.username.$dirty && userFm.username.$error.required">
@@ -224,11 +231,18 @@
                            ng-model="model.formData.username"
                            ng-init="model.formData['username']=model.userninfo.username"
                            ng-minlength="6" ng-maxlength="30" ng-pattern="model.USERNAME_PATTERN"
-                           recno="model.formData.recno" username>
+                           recno="model.formData.recno" email="model.formData.email" username>
                     <span ng-show="userFm.username.$dirty && userFm.username.$pending.username">Checking if this name is available...</span>
+
                     <small class="help-block"
                            ng-show="userFm.username.$error.username">
-                        Username already exists! Please use another username.
+                        <span ng-if="main.isEmail(userFm.username.$viewValue)">
+                            If you want to use an email address as your username,
+                            please use the same email address above!
+                        </span>
+                        <span ng-if="!main.isEmail(userFm.username.$viewValue)">
+                            Username already exists! Please use another username.
+                        </span>
                     </small>
                     <small class="help-block"
                            ng-show="userFm.username.$dirty && userFm.username.$error.required">
@@ -296,12 +310,13 @@
 
         <!--toggle panel ends here-->
         <!--====================-->
-
+        <a href="" ng-click="model.cancelUpdate()" class="btn btn-danger pull-right">Cancel</a>
         <input type="submit" id="submit" class="btn btn-info pull-right" value="UPDATE"
                ng-disabled="userFm.$invalid">
+
     </form>
 </div>
 
 <div ng-if="model.msg">{{model.msg}}</div>
-<div ng-if="model.errormsg">{{model.errormsg}}</div>
+<div ng-if="model.errormsg">{{model.errormsg}}></div>
 

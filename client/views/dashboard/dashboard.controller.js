@@ -16,6 +16,7 @@
         vm.checkDateLimits = checkDateLimits;
         vm.getProfile = getProfile;
         vm.updateProfile = updateProfile;
+        vm.cancelUpdate = cancelUpdate;
 
 
         function convertToDate(date) {
@@ -59,12 +60,12 @@
 
         function updateProfile(data) {
             //console.log(data);
-            if(vm.userninfo.recno == 'new' && (typeof vm.createUsername == "undefined" || !vm.createUsername)) {
+            if (vm.userninfo.recno == 'new' && (typeof vm.createUsername == "undefined" || !vm.createUsername)) {
                 delete data['username'];
                 delete data['password'];
                 delete data['confirmPassword'];
             }
-            if(vm.userninfo.recno != 'new' && (typeof vm.updatePwd == "undefined" || !vm.updatePwd) ) {
+            if (vm.userninfo.recno != 'new' && (typeof vm.updatePwd == "undefined" || !vm.updatePwd)) {
                 delete data['password'];
                 delete data['confirmPassword'];
             }
@@ -75,12 +76,16 @@
                     if (response.data.success) {
                         vm.msg = response.data.msg;
                     } else {
-                        var errormsg = response.data.msg;
-                        vm.errormsg = errormsg;
-                        //alert(errormsg);
+                        //vm.errormsg = response.data.msg;
+                        alert(response.data.msg);
                     }
                 });
         }
+
+        function cancelUpdate() {
+            vm.data = null;
+        }
+
 
     }
 
