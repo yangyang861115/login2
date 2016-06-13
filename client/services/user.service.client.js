@@ -36,6 +36,7 @@
         }
 
         function checkEmail(data) {
+            console.log(data);
             var url = BASE_URL + "popfind";
             return $http.post(url, data);
         }

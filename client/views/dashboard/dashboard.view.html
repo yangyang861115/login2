@@ -75,9 +75,12 @@
                 <input type={{line.type}} name={{line.name}} class="form-control" id={{line.rowNum}}
                        ng-required={{line.reqd}} ng-model="model.formData[line.name]"
                        ng-init="model.formData[line.name]=line.value"
-                       ng-pattern="model.EMAIL_REGEXP">
+                       ng-pattern="model.EMAIL_REGEXP"
+                       email-check userid="model.formData.id">
                 <p class="help-block">{{line.extra}}</p>
                 <span class="error" ng-show="userFm[line.name].$dirty">
+                    <span ng-show="userFm[line.name].$pending.email">Checking if this email is available...</span>
+                    <span ng-show="userFm[line.name].$error.email">Email already exists! Please use another email.</span>
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                     <span ng-show="userFm[line.name].$error.pattern">Invalid email address.</span>
                 </span>
