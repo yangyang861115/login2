@@ -18,6 +18,7 @@
             validateToken: validateToken,
             getProfile: getProfile,
             updateProfile: updateProfile,
+            getCountryList: getCountryList
             //getUserId: getUserId
         };
 
@@ -36,12 +37,16 @@
         }
 
         function checkEmail(data) {
-            console.log(data);
             var url = BASE_URL + "popfind";
             return $http.post(url, data);
         }
 
         function checkUsername(data) {
+            var url = BASE_URL + "popfind";
+            return $http.post(url, data);
+        }
+
+        function getCountryList(data) {
             var url = BASE_URL + "popfind";
             return $http.post(url, data);
         }
@@ -64,8 +69,6 @@
             var url = BASE_URL + "entercode";
             return $http.post(url, data);
         }
-
-
 
         function validateToken() {
             var url = BASE_URL + "validate";

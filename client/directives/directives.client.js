@@ -44,13 +44,11 @@
                                     User.checkEmail(data)
                                         .then(function (response) {
                                             if (response.data.success) {
-                                                console.log(response.data);
                                                 //do nothing
                                                 def.resolve();
                                             }
                                             else {
                                                 //console.log("inside rejection for the exists username");
-                                                console.log(response.data);
                                                 def.reject({message: "Username already exists! Please use another username."});
                                             }
                                         });

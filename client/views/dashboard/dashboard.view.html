@@ -4,8 +4,8 @@
 <button class="btn btn-info" ng-click="model.getProfile()">Get Profile</button>
 
 <div ng-if="model.data" ng-hide="model.msg">
-    <form class="form-horizontal" id="userProfile" name="userFm" ng-submit="model.updateProfile(model.formData)"
-          novalidate >
+    <form class="form-horizontal" id="userProfile" name="userFm" ng-submit="model.updateProfile(userFm, model.formData)"
+          novalidate>
         <div class="form-group" ng-repeat="(i, line) in model.data">
 
             <label for={{line.rowNum}} class="col-sm-2 control-label">{{line.label}} <span
@@ -24,7 +24,7 @@
                        maxlength="{{line.max}}">
                 <p class="help-block">{{line.extra}}</p>
                 <p class="help-block" ng-show="line.max">maximum length is {{line.max}}</p>
-                <span ng-show="userFm[line.name].$dirty" class="error">
+                <span ng-show="userFm[line.name].$dirty || userFm.$submitted " class="error">
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                 </span>
             </div>
@@ -37,7 +37,7 @@
                        maxlength="{{line.max}}">
                 <p class="help-block">{{line.extra}}</p>
                 <p class="help-block" ng-show="line.max">maximum length is {{line.max}}</p>
-                <span ng-show="userFm[line.name].$dirty" class="error">
+                <span ng-show="userFm[line.name].$dirty || userFm.$submitted" class="error">
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                 </span>
             </div>
@@ -63,7 +63,7 @@
                        ng-required={{line.reqd}}
                        ng-model="model.formData[line.name]" ng-init="model.formData[line.name]=model.convertToDate(line.value)">-->
                 <p class="help-block">{{line.extra}}</p>
-                <span ng-show="userFm[line.name].$dirty" class="error">
+                <span ng-show="userFm[line.name].$dirty || userFm.$submitted" class="error">
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                     <span ng-show="userFm[line.name].$error.date">Not a valid date.(YYYY-MM-DD)</span>
                     <span ng-show="userFm[line.name].$error.outOfBounds">Date selected is out of range.</span>
@@ -80,6 +80,8 @@
                 <p class="help-block">{{line.extra}}</p>
                 <span class="error" ng-show="userFm[line.name].$dirty">
                     <span ng-show="userFm[line.name].$pending.email">Checking if this email is available...</span>
+                    </span>
+                <span ng-show="userFm[line.name].$dirty || userFm.$submitted">
                     <span ng-show="userFm[line.name].$error.email">Email already exists! Please use another email.</span>
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                     <span ng-show="userFm[line.name].$error.pattern">Invalid email address.</span>
@@ -88,13 +90,44 @@
 
             <!--select box-->
             <div class="col-sm-10" ng-if="line.type == 'select'">
-                <select name="{{line.name}}" ng-model="model.formData[line.name]"
-                        ng-init="model.formData[line.name]=line.value" id="{{line.rowNum}}" class="form-control"
+                <!--country-->
+                <select name="country" ng-if="line.name == 'country'"
+                        ng-change="model.changeRegionList(model.formData.country)"
+                        ng-model="model.formData.country"
+                        ng-init="model.formData.country=line.value"
+                        id="{{line.rowNum}}" class="form-control"
                         ng-required={{line.reqd}}>
                     <option ng-repeat="(val, opt) in line.lst" value="{{val}}">{{opt}}</option>
                 </select>
+                <!--end of country-->
+
+                <!--region/province/state-->
+                <select name="{{line.name}}"
+                        ng-if="line.name == 'region'"
+                        ng-show="line.value || model.formData.country"
+                        ng-model="model.formData[line.name]"
+                        ng-init="model.formData[line.name]=line.value"
+                        id="{{line.rowNum}}" class="form-control"
+                        ng-required={{line.reqd}}>
+                    <option ng-repeat="(val, opt) in line.lst" value="{{val}}">{{opt}}</option>
+                </select>
+
+                <!--end of region-->
+
+                <!--regular select-->
+                <select name="{{line.name}}"
+                        ng-if="line.name != 'region' && line.name != 'country'"
+                        ng-model="model.formData[line.name]"
+                        ng-init="model.formData[line.name]=line.value"
+                        id="{{line.rowNum}}" class="form-control"
+                        ng-required={{line.reqd}}>
+                    <option ng-repeat="(val, opt) in line.lst" value="{{val}}">{{opt}}</option>
+                </select>
+                <!--end of regular select-->
+
+
                 <p class="help-block">{{line.extra}}</p>
-                <span class="error" ng-show="userFm[line.name].$dirty">
+                <span class="error" ng-show="userFm[line.name].$dirty || userFm.$submitted">
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                 </span>
             </div>
@@ -106,7 +139,7 @@
                           rows=5
                           ng-required={{line.reqd}}></textarea>
                 <p class="help-block">{{line.extra}}</p>
-                <span class="error" ng-show="userFm[line.name].$dirty">
+                <span class="error" ng-show="userFm[line.name].$dirty || userFm.$submitted">
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                 </span>
             </div>
@@ -121,14 +154,14 @@
                     </label>
                 </div>
                 <p class="help-block">{{line.extra}}</p>
-                <span class="error" ng-show="userFm[line.name].$dirty">
+                <span class="error" ng-show="userFm[line.name].$dirty || userFm.$submitted">
                     <span ng-show="userFm[line.name].$error.required">{{line.label}} is required.</span>
                 </span>
             </div>
 
         </div>
         <!--====================-->
-        <!--create user name/pwd-->
+        <!--1 create user name/pwd-->
         <div ng-if="model.userninfo.recno == 'new'">
             <div class="col-sm-10 col-sm-offset-2">
                 <span>Creating a Username/Password are optional. Leave the next box unchecked to continue with an email only login.</span>
@@ -137,10 +170,12 @@
                 <label for="createusername" class="col-sm-2 control-label">Create Username</label>
                 <div class="col-sm-10">
                     <input type="checkbox" id="createusername"
-                           ng-click="model.createUsername = !model.createUsername">
+                           ng-model="model.createUsername">
                 </div>
             </div>
-           <div ng-if="model.createUsername">
+
+
+            <div ng-if="model.createUsername">
                 <!--new username/pwd-->
                 <div class="form-group">
                     <input type="text" ng-model="model.formData.recno"
@@ -153,33 +188,36 @@
                         <input class="form-control"
                                type="text" id="username" required name="username"
                                ng-model="model.formData.username"
-                               ng-init="model.formData['username']=model.userninfo.username"
+                               ng-init="model.formData['username']=model.formData.email"
                                ng-minlength="6" ng-maxlength="30" ng-pattern="model.USERNAME_PATTERN"
-                               recno="model.formData.recno"  email="model.formData.email" username>
+                               recno="model.formData.recno" email="model.formData.email" username>
 
                         <span ng-show="userFm.username.$dirty && userFm.username.$pending.username">Checking if this name is available...</span>
-                        <small class="help-block"
-                               ng-show="userFm.username.$error.username">
-                        <span ng-if="main.isEmail(userFm.username.$viewValue)">
-                            If you want to use an email address as your username,
-                            please use the same email address above!
+                        <span ng-show=" userFm.username.$dirty|| userFm.$submitted">
+                            <small class="help-block"
+                                   ng-show="userFm.username.$error.username">
+                                <span ng-if="main.isEmail(userFm.username.$viewValue)">
+                                    If you want to use an email address as your username,
+                                    please use the same email address above!
+                                </span>
+                                <span ng-if="!main.isEmail(userFm.username.$viewValue)">
+                                    Username already exists! Please use another username.
+                                </span>
+                            </small>
+                            <small class="help-block"
+                                   ng-show=" userFm.username.$error.required">
+                                username is required for login
+                            </small>
+                            <small class="help-block"
+                                   ng-show=" userFm.username.$error.minlength || userFm.username.$error.maxlength">
+                                The username must be more than 6 and less than 30 characters long
+                            </small>
+                            <small class="help-block"
+                                   ng-show=" userFm.username.$error.pattern">
+                                The username can only consist of alphabetical, number, dot and underscore
+                            </small>
                         </span>
-                        <span ng-if="!main.isEmail(userFm.username.$viewValue)">
-                            Username already exists! Please use another username.
-                        </span>
-                        </small>
-                        <small class="help-block"
-                               ng-show="userFm.username.$dirty && userFm.username.$error.required">
-                            username is required for login
-                        </small>
-                        <small class="help-block"
-                               ng-show="userFm.username.$dirty && (userFm.username.$error.minlength || userFm.username.$error.maxlength)">
-                            The username must be more than 6 and less than 30 characters long
-                        </small>
-                        <small class="help-block"
-                               ng-show="userFm.username.$dirty && userFm.username.$error.pattern">
-                            The username can only consist of alphabetical, number, dot and underscore
-                        </small>
+
                     </div>
                 </div>
                 <div class="form-group">
@@ -189,14 +227,16 @@
                                type="password" id="password" required name="password"
                                ng-model="model.formData.password"
                                ng-pattern="model.PASSWORD_PATTERN">
-                        <small class="help-block"
-                               ng-show="userFm.password.$dirty && userFm.password.$error.required">
-                            password is required for login
-                        </small>
-                        <small class="help-block"
-                               ng-show="userFm.password.$dirty && userFm.password.$error.pattern">
-                            At least 7 character with at least one upper case, one lower case and one number
-                        </small>
+                         <span ng-show=" userFm.password.$dirty|| userFm.$submitted">
+                            <small class="help-block"
+                                   ng-show="userFm.password.$error.required">
+                                password is required for login
+                            </small>
+                            <small class="help-block"
+                                   ng-show=" userFm.password.$error.pattern">
+                                At least 7 character with at least one upper case, one lower case and one number
+                            </small>
+                         </span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -206,20 +246,32 @@
                                ng-model="model.formData.confirmPassword"
                                ui-validate="'$value==model.formData.password'"
                                ui-validate-watch="'model.formData.password'">
-                        <small class="help-block"
-                               ng-show="userFm.confirmPassword.$dirty && userFm.confirmPassword.$error.required">
-                            Confirm password is required
-                        </small>
-                        <small class="help-block"
-                               ng-show="userFm.confirmPassword.$dirty && userFm.confirmPassword.$error.validator">
-                            The password and its confirm are not the same
-                        </small>
+                        <span ng-show=" userFm.confirmPassword.$dirty|| userFm.$submitted">
+                            <small class="help-block"
+                                   ng-show="userFm.confirmPassword.$error.required">
+                                Confirm password is required
+                            </small>
+                            <small class="help-block"
+                                   ng-show="userFm.confirmPassword.$error.validator">
+                                The password and its confirm are not the same
+                            </small>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <input type="checkbox" ng-model="model.formData.remember"
+                               name="remember" id="remember" class="pull-right">
+                    </div>
+                    <div class="col-sm-10 control-label">
+                        <label for="remember" class="pull-left">Remember Me</label>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- 1 end of create user name/pwd-->
 
-        <!--update username/pwd-->
+        <!--2 update username/pwd-->
         <div ng-if="model.userninfo.recno != 'new'">
             <div class="form-group">
                 <input type="text" ng-model="model.formData.recno"
@@ -237,35 +289,37 @@
                            recno="model.formData.recno" email="model.formData.email" username>
                     <span ng-show="userFm.username.$dirty && userFm.username.$pending.username">Checking if this name is available...</span>
 
-                    <small class="help-block"
-                           ng-show="userFm.username.$error.username">
-                        <span ng-if="main.isEmail(userFm.username.$viewValue)">
-                            If you want to use an email address as your username,
-                            please use the same email address above!
-                        </span>
-                        <span ng-if="!main.isEmail(userFm.username.$viewValue)">
-                            Username already exists! Please use another username.
-                        </span>
-                    </small>
-                    <small class="help-block"
-                           ng-show="userFm.username.$dirty && userFm.username.$error.required">
-                        username is required for login
-                    </small>
-                    <small class="help-block"
-                           ng-show="userFm.username.$dirty && (userFm.username.$error.minlength || userFm.username.$error.maxlength)">
-                        The username must be more than 6 and less than 30 characters long
-                    </small>
-                    <small class="help-block"
-                           ng-show="userFm.username.$dirty && userFm.username.$error.pattern">
-                        The username can only consist of alphabetical, number, dot and underscore
-                    </small>
+                    <span ng-show=" userFm.username.$dirty|| userFm.$submitted">
+                        <small class="help-block"
+                               ng-show="userFm.username.$error.username">
+                            <span ng-if="main.isEmail(userFm.username.$viewValue)">
+                                If you want to use an email address as your username,
+                                please use the same email address above!
+                            </span>
+                            <span ng-if="!main.isEmail(userFm.username.$viewValue)">
+                                Username already exists! Please use another username.
+                            </span>
+                        </small>
+                        <small class="help-block"
+                               ng-show="userFm.username.$error.required">
+                            username is required for login
+                        </small>
+                        <small class="help-block"
+                               ng-show="userFm.username.$error.minlength || userFm.username.$error.maxlength">
+                            The username must be more than 6 and less than 30 characters long
+                        </small>
+                        <small class="help-block"
+                               ng-show="userFm.username.$error.pattern">
+                            The username can only consist of alphabetical, number, dot and underscore
+                        </small>
+                    </span>
                 </div>
             </div>
             <!--update pwd panel starts here-->
             <div class="form-group">
                 <div class="col-sm-2">
                     <input type="checkbox" id="updatePwd" class="pull-right"
-                           ng-click="model.updatePwd = !model.updatePwd">
+                           ng-model="model.updatePwd">
                 </div>
                 <div class="col-sm-10 control-label">
                     <label for="updatePwd" class="pull-left">Check the box if your want to update your Password</label>
@@ -279,14 +333,16 @@
                                type="password" id="password" required name="password"
                                ng-model="model.formData.password"
                                ng-pattern="model.PASSWORD_PATTERN">
-                        <small class="help-block"
-                               ng-show="userFm.password.$dirty && userFm.password.$error.required">
-                            password is required for login
-                        </small>
-                        <small class="help-block"
-                               ng-show="userFm.password.$dirty && userFm.password.$error.pattern">
-                            At least 7 character with at least one upper case, one lower case and one number
-                        </small>
+                        <span ng-show=" userFm.password.$dirty|| userFm.$submitted">
+                            <small class="help-block"
+                                   ng-show=" userFm.password.$error.required">
+                                password is required for login
+                            </small>
+                            <small class="help-block"
+                                   ng-show="userFm.password.$error.pattern">
+                                At least 7 character with at least one upper case, one lower case and one number
+                            </small>
+                        </span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -296,30 +352,40 @@
                                ng-model="model.formData.confirmPassword"
                                ui-validate="'$value==model.formData.password'"
                                ui-validate-watch="'model.formData.password'">
-                        <small class="help-block"
-                               ng-show="userFm.confirmPassword.$dirty && userFm.confirmPassword.$error.required">
-                            Confirm password is required
-                        </small>
-                        <small class="help-block"
-                               ng-show="userFm.confirmPassword.$dirty && userFm.confirmPassword.$error.validator">
-                            The password and its confirm are not the same
-                        </small>
+                        <span ng-show=" userFm.confirmPassword.$dirty|| userFm.$submitted">
+                            <small class="help-block"
+                                   ng-show="userFm.confirmPassword.$error.required">
+                                Confirm password is required
+                            </small>
+                            <small class="help-block"
+                                   ng-show="userFm.confirmPassword.$error.validator">
+                                The password and its confirm are not the same
+                            </small>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <input type="checkbox" ng-model="model.formData.remember"
+                               name="remember" id="remember" class="pull-right">
+                    </div>
+                    <div class="col-sm-10 control-label">
+                        <label for="remember" class="pull-left">Remember Me</label>
                     </div>
                 </div>
             </div>
             <!--update pwd panel ends here-->
         </div>
 
-
+        <!-- 2 end of update username/pwd-->
         <!--toggle panel ends here-->
         <!--====================-->
         <a href="" ng-click="model.cancelUpdate()" class="btn btn-danger pull-right">Cancel</a>
-        <input type="submit" id="submit" class="btn btn-info pull-right" value="UPDATE"
-               ng-disabled="userFm.$invalid">
+        <input type="submit" id="submit" class="btn btn-info pull-right" value="UPDATE">
 
     </form>
+
 </div>
 
 <div ng-if="model.msg">{{model.msg}}</div>
 <div ng-if="model.errormsg">{{model.errormsg}}></div>
-

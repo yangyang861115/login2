@@ -14,14 +14,14 @@
                 User.validateToken()
                     .then(function(response) {
 
-                        if (response.data.success) {
+                        if (response && response.data.success) {
                             console.log("login successfully!");
                             window.location = "#/dashboard";
                         }
                         else {
-                            $window.localStorage.removeItem('jwtToken');
-                            window.location = "#/login";
+                            $window.sessionStorage.removeItem('jwtToken');
                             alert("invalid token");
+                            window.location = "#/login";
                         }
 
                     });
