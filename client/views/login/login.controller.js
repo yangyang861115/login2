@@ -3,7 +3,7 @@
  */
 (function () {
     angular
-        .module("LoginApp")
+        .module("myApp")
         .controller("LoginController", LoginController);
 
     function LoginController($scope, $sce) {

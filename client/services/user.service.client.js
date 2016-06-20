@@ -3,7 +3,7 @@
  */
 (function () {
     angular
-        .module("LoginApp")
+        .module("myApp")
         .factory('User', user);
     function user($http, Auth) {
         var BASE_URL = "https://crucore.com/api.php?a=";

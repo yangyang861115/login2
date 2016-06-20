@@ -3,7 +3,7 @@
  */
 (function () {
     angular
-        .module("LoginApp")
+        .module("myApp")
         .controller("MainController", MainController);
 
     function MainController(User, Auth, $sce) {
@@ -25,7 +25,6 @@
         }
 
         vm.signIn = function (formData) {
-            console.log(formData);
             User.signIn(formData)
                 .then(function (response) {
                     if (response.data.success) {
@@ -56,7 +55,6 @@
             if (data.sixcnt && data.sixcnt.toString().length == 6) {
                 User.subEmailCode(data)
                     .then(function (response) {
-                        console.log(response.data);
                         if (response.data.success) {
                             console.log("Submit email code successfully!");
                             var token = response.data.token;
@@ -114,10 +112,8 @@
         //};
 
         vm.signUp = function (formData) {
-            console.log(formData);
             User.signUp(formData)
                 .then(function (response) {
-                    console.log(response.data);
                     if (response.data.success) {
                         console.log("login successfully!");
                         var token = response.data.token;

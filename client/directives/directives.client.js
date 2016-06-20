@@ -3,7 +3,7 @@
  */
 (function(){
     angular
-        .module("LoginApp")
+        .module("myApp")
         .directive('username', function ($q, $timeout, User) {
             return {
                 require: 'ngModel',

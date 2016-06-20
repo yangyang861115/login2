@@ -3,7 +3,7 @@
  */
 (function(){
     angular
-        .module("LoginApp")
+        .module("myApp")
         .factory("LessonService", LessonService);
 
     function LessonService ($http){

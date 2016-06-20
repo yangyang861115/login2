@@ -3,10 +3,10 @@
  */
 (function () {
     angular
-        .module("LoginApp")
+        .module("myApp")
         .controller("DashboardController", dashboardController);
 
-    function dashboardController(User, Auth) {
+    function dashboardController(User, Auth, $location) {
         var vm = this;
         vm.formData = {};
 
@@ -18,8 +18,18 @@
         vm.getProfile = getProfile;
         vm.updateProfile = updateProfile;
         vm.cancelUpdate = cancelUpdate;
-
         vm.changeRegionList = changeRegionList;
+        vm.askForProfileMsg = false;
+        function init() {
+            //check token strt
+            var tokenSet = Auth.parseJwt(Auth.getToken());
+            if(tokenSet.fixpro) {
+                vm.askForProfileMsg = true;
+                getProfile();
+            }
+        }
+        init();
+
         function changeRegionList(country) {
             console.log(country);
             var droplist = vm.regdrop;
@@ -149,8 +159,9 @@
 
                 User.updateProfile(data)
                     .then(function (response) {
-                        console.log(data);
+                        vm.askForProfileMsg = false;
                         if (response.data.success) {
+
                             vm.msg = response.data.msg;
                             vm.createUsername = false;
                             vm.updatePwd = false;

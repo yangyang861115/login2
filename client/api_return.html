@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="en-US" ng-app="myApp">
+<!--
+	When Arrive, Angular JS does two things.
+	1) Grabs the token from the URL.
+    2) Sends the token to the API for authentication.  https://crucore.com/api.php?a=validate
+    3) If successful, redirect to index.html
+    4) If fail, then give unauthorized access warning.
+-->    
+
+    <head>
+        <meta charset="UTF-8">
+        <!--<meta http-equiv="refresh" content="1;url=index.html">
+        <script type="text/javascript">
+            window.location.href = "index.html"
+        </script>-->
+        <title>Page Redirection</title>
+    </head>
+    <body ng-controller="RedirectController">
+    <div ng-model="token">
+        token is
+        {{token}}
+    </div>
+        <!-- Note: don't tell people to `click` the link, just tell them that it is a link. -->
+        If you are not redirected automatically, follow the <a href="index.html">link to example</a>
+    </body>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script>
+    angular.module("myApp", [])
+            .controller("RedirectController", redirectController);
+    function redirectController ($scope, $location) {
+        $scope.token = $location.absUrl().split('token=')[1];
+    }
+</script>
+</html>

@@ -3,7 +3,7 @@
  */
 (function () {
     angular
-        .module("LoginApp")
+        .module("myApp")
         .controller("LessonController", LessonController);
 
     function LessonController($location, $sce, $routeParams, LessonService) {

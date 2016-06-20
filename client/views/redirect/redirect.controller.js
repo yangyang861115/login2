@@ -3,7 +3,7 @@
  */
 (function(){
     angular
-        .module("LoginApp")
+        .module("myApp")
         .controller("RedirectController", redirectController);
     function redirectController ($routeParams, $window, User, Auth) {
         var vm = this;

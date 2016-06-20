@@ -3,7 +3,7 @@
  */
 (function () {
     angular
-        .module("LoginApp")
+        .module("myApp")
         .config(configuration)
         .run(restrict);
 

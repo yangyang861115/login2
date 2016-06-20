@@ -4,6 +4,7 @@
 <button class="btn btn-info" ng-click="model.getProfile()">Get Profile</button>
 
 <div ng-if="model.data" ng-hide="model.msg">
+    <p ng-show="model.askForProfileMsg">Please update your profile in the following form.</p>
     <form class="form-horizontal" id="userProfile" name="userFm" ng-submit="model.updateProfile(userFm, model.formData)"
           novalidate>
         <div class="form-group" ng-repeat="(i, line) in model.data">
