@@ -148,16 +148,23 @@
                     delete data['username'];
                     delete data['password'];
                     delete data['confirmPassword'];
-                    delete data['remember'];
+                    //delete data['remember'];
                 }
                 if (vm.userninfo.recno != 'new' && !vm.updatePwd) {
                     console.log("I am here........");
                     delete data['password'];
                     delete data['confirmPassword'];
-                    delete data['remember'];
+                    //delete data['remember'];
+                }
+                if (vm.userninfo.recno != 'new' && vm.updatePwd){
+                    if(!data.remember) {
+                        //delete cookie
+                        Auth.deleteRememberMeCookie();
+                    }
                 }
 
-                User.updateProfile(data)
+
+                    User.updateProfile(data)
                     .then(function (response) {
                         vm.askForProfileMsg = false;
                         if (response.data.success) {
