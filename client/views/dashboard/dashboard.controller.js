@@ -23,22 +23,30 @@
         function init() {
             //check token strt
             var tokenSet = Auth.parseJwt(Auth.getToken());
-            if(tokenSet.fixpro) {
+
+            if(Auth.validateRememberMeCookie()) {
+                vm.isRemembered = true;
+            } else {
+                vm.isRemembered = false;
+            }
+
+            if (tokenSet.fixpro) {
                 vm.askForProfileMsg = true;
                 getProfile();
             }
         }
+
         init();
 
         function changeRegionList(country) {
             console.log(country);
             var droplist = vm.regdrop;
-            if(droplist.indexOf(country) > -1) {
+            if (droplist.indexOf(country) > -1) {
                 //should change the list items in the region/province/state and type to select
                 //display label should change
                 var index = -1;
-                for(var i in vm.data) {
-                    if(vm.data[i].name == 'region') {
+                for (var i in vm.data) {
+                    if (vm.data[i].name == 'region') {
                         index = i;
                         break;
                     }
@@ -50,13 +58,13 @@
                 };
                 User.getCountryList(countryData)
                     .then(
-                        function(res){
-                            if(res.data.success){
+                        function (res) {
+                            if (res.data.success) {
                                 console.log("list should be ......");
-                                vm.data[index].lst  = res.data.lst;
+                                vm.data[index].lst = res.data.lst;
                             }
                         },
-                        function(err) {
+                        function (err) {
 
                         }
                     );
@@ -66,8 +74,8 @@
             } else {
                 //its should change to the type of "text"
                 //display label as 'region'
-                for(var i in vm.data) {
-                    if(vm.data[i].name == 'region') {
+                for (var i in vm.data) {
+                    if (vm.data[i].name == 'region') {
                         delete vm.data[i].lst;
                         delete vm.data[i].value;
                         vm.data[i].type = "text";
@@ -105,6 +113,7 @@
             vm.updatePwd = false;
             User.getProfile()
                 .then(function (response) {
+                    console.log(response.data);
                     vm.datereq = response.data.datareq;
                     vm.regdrop = response.data.regdrop;
                     vm.regnames = response.data.regnames;
@@ -123,15 +132,15 @@
                     }
                     var country = null;
                     var regionIndex = null;
-                    for (var i in response.data.data){
-                        if(response.data.data[i].name == 'country') {
+                    for (var i in response.data.data) {
+                        if (response.data.data[i].name == 'country') {
                             country = response.data.data[i].value;
                         }
-                        if(response.data.data[i].name == 'region') {
+                        if (response.data.data[i].name == 'region') {
                             regionIndex = i;
                         }
                     }
-                    if(country && regionIndex && vm.regdrop.indexOf(country) > -1) {
+                    if (country && regionIndex && vm.regdrop.indexOf(country) > -1) {
                         response.data.data[regionIndex].label = vm.regnames[country];
                     }
 
@@ -141,7 +150,8 @@
         }
 
         function updateProfile(form, data) {
-            if(form.$invalid) {
+
+            if (form.$invalid) {
                 return;
             } else {
                 if (vm.userninfo.recno == 'new' && !vm.createUsername) {
@@ -151,20 +161,20 @@
                     //delete data['remember'];
                 }
                 if (vm.userninfo.recno != 'new' && !vm.updatePwd) {
-                    console.log("I am here........");
+
                     delete data['password'];
                     delete data['confirmPassword'];
                     //delete data['remember'];
                 }
-                if (vm.userninfo.recno != 'new' && vm.updatePwd){
-                    if(!data.remember) {
+                if (vm.userninfo.recno != 'new' && vm.updatePwd) {
+                    if (!data.remember) {
                         //delete cookie
                         Auth.deleteRememberMeCookie();
                     }
                 }
 
 
-                    User.updateProfile(data)
+                User.updateProfile(data)
                     .then(function (response) {
                         vm.askForProfileMsg = false;
                         if (response.data.success) {
@@ -174,14 +184,16 @@
                             vm.updatePwd = false;
 
                             //remember me
-                            if(data.remember) {
+                            if (data.remember) {
                                 var token = Auth.getToken();
                                 Auth.saveRememberMeCookie(token);
+                            } else {
+                                Auth.deleteRememberMeCookie();
                             }
 
                             delete data['password'];
                             delete data['confirmPassword'];
-                            delete data['remember'];
+
                         } else {
                             //vm.errormsg = response.data.msg;
                             alert(response.data.msg);

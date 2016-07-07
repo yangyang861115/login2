@@ -222,6 +222,15 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="col-sm-2">
+                        <input type="checkbox" ng-model="model.formData.remember"
+                               name="remember" id="remember" class="pull-right">
+                    </div>
+                    <div class="col-sm-10 control-label">
+                        <label for="remember" class="pull-left">Remember Me</label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="password" class="col-sm-2 control-label">Password *</label>
                     <div class="col-sm-10">
                         <input class="form-control"
@@ -259,15 +268,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-2">
-                        <input type="checkbox" ng-model="model.formData.remember"
-                               name="remember" id="remember" class="pull-right">
-                    </div>
-                    <div class="col-sm-10 control-label">
-                        <label for="remember" class="pull-left">Remember Me</label>
-                    </div>
-                </div>
+
             </div>
         </div>
         <!-- 1 end of create user name/pwd-->
@@ -314,6 +315,15 @@
                             The username can only consist of alphabetical, number, dot and underscore
                         </small>
                     </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2">
+                    <input type="checkbox" ng-model="model.formData.remember" ng-init="model.formData.remember = model.isRemembered"
+                           name="remember" id="remember" class="pull-right">
+                </div>
+                <div class="col-sm-10 control-label">
+                    <label for="remember" class="pull-left">Remember Me</label>
                 </div>
             </div>
             <!--update pwd panel starts here-->
@@ -363,15 +373,6 @@
                                 The password and its confirm are not the same
                             </small>
                         </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-2">
-                        <input type="checkbox" ng-model="model.formData.remember"
-                               name="remember" id="remember" class="pull-right">
-                    </div>
-                    <div class="col-sm-10 control-label">
-                        <label for="remember" class="pull-left">Remember Me</label>
                     </div>
                 </div>
             </div>
