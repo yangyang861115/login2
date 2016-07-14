@@ -13,9 +13,12 @@
             getToken: getToken,
             isAuthed: isAuthed,
             logout: logout,
+            checkAdmin: checkAdmin,
+            getUserId: getUserId,
             saveRememberMeCookie: saveRememberMeCookie,
             deleteRememberMeCookie: deleteRememberMeCookie,
-            validateRememberMeCookie: validateRememberMeCookie
+            validateRememberMeCookie: validateRememberMeCookie,
+            getTokenFromCookie: getTokenFromCookie
         }
 
         // Add JWT methods here
@@ -51,7 +54,7 @@
         function logout() {
             $window.sessionStorage.removeItem('jwtToken');
             deleteRememberMeCookie();
-            window.location = "#/login";
+            window.location = "#/";
         }
 
         function saveRememberMeCookie(token) {
@@ -74,6 +77,33 @@
                 return true;
             }
             return false;
+        }
+
+        function getTokenFromCookie(){
+            var token;
+            var cookielist = document.cookie.split(';');
+            for(var i in cookielist) {
+                if(cookielist[i].indexOf('remember-me') != -1) {
+                    //get the token from the cookie list
+                    token = cookielist[i].split('=')[1];
+                }
+            }
+            return token;
+        }
+
+        function checkAdmin(){
+            var token = getToken();
+            var payload = parseJwt(token);
+            var admin = payload.adm;
+            var id = payload.id;
+            if(id == admin) return true;
+            else return false;
+        }
+
+        function getUserId(){
+            var token = getToken();
+            var payload = parseJwt(token);
+            return payload.id;
         }
 
         return api;

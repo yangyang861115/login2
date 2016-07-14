@@ -6,13 +6,18 @@
         .module("myApp")
         .controller("DashboardController", dashboardController);
 
-    function dashboardController(User, Auth, $location) {
+    function dashboardController(User, Auth, Upload, $timeout) {
         var vm = this;
         vm.formData = {};
 
         vm.EMAIL_REGEXP = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
         vm.PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{7,}$/;
         vm.USERNAME_PATTERN = /^[a-zA-Z0-9\.@_]{6,30}$/;
+        vm.USAPHONE_PATTERN = /^(\d{3})[-](\d{3})[-](\d{4})$/;
+        vm.PHOTO_PLACEHOLDER_URL = "https://crucore.com/photos/default.jpg";
+
+        vm.upload = upload;
+        vm.removePhoto = removePhoto;
         vm.convertToDate = convertToDate;
         vm.checkDateLimits = checkDateLimits;
         vm.getProfile = getProfile;
@@ -37,6 +42,68 @@
         }
 
         init();
+
+        function upload(dataUrl, name) {
+
+            Upload.upload({
+                url: 'https://crucore.com/api.php?a=photo',
+                method: 'POST',
+                data: {
+                    file: Upload.dataUrltoBlob(dataUrl, name),
+                    id: Auth.getUserId(),
+                    targetPath: '/photos/'
+                },
+            }).then(
+                function (response) {
+                    if(response.data.success) {
+                        $timeout(function () {
+                            vm.result = response.data;
+                            vm.photoUrl = response.data.file;
+                            vm.showUpload = false;
+                            delete vm.progress;
+                        });
+                    } else{
+                        vm.errorMsg = response.data.msg;
+                    }
+
+
+                },
+                function (response) {
+                    if (response.status > 0) vm.errorMsg = response.status
+                        + ': ' + response.data;
+
+                },
+                function (evt) {
+                    vm.progress = parseInt(100.0 * evt.loaded / evt.total);
+
+                });
+        }
+
+
+        function removePhoto(url) {
+            var data = {
+                id: Auth.getUserId(),
+                url:url
+            };
+            User.removePhoto(data)
+                .then(
+                    function(response) {
+                        console.log(response.data);
+                        if(response.data.success) {
+                            delete vm.result;
+                            delete vm.errorMsg;
+                            vm.dmsg = response.data.msg;
+
+                        }
+                        vm.photoUrl = vm.PHOTO_PLACEHOLDER_URL;
+                    },
+                    function(error) {
+
+                    }
+                );
+
+        }
+
 
         function changeRegionList(country) {
             console.log(country);
@@ -113,11 +180,12 @@
             vm.updatePwd = false;
             User.getProfile()
                 .then(function (response) {
-                    console.log(response.data);
+
                     vm.datereq = response.data.datareq;
                     vm.regdrop = response.data.regdrop;
                     vm.regnames = response.data.regnames;
-
+                    vm.photoUrl = response.data.userninfo.photo;
+                    if(!vm.photoUrl) vm.photoUrl = vm.PHOTO_PLACEHOLDER_URL;
 
                     vm.open = function (name) {
                         vm.datereq[name].opened = !vm.datereq[name].opened;

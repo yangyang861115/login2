@@ -18,17 +18,10 @@
             validateToken: validateToken,
             getProfile: getProfile,
             updateProfile: updateProfile,
-            getCountryList: getCountryList
-            //getUserId: getUserId
+            getCountryList: getCountryList,
+            removePhoto: removePhoto
         };
 
-
-        //function getUserId() {
-        //    var token = $window.sessionStorage['jwtToken'];
-        //    var part = Auth.parseJwt(token);
-        //    return part.
-        //
-        //}
 
         function signUp(data) {
             var url = BASE_URL + "newuser";
@@ -83,6 +76,11 @@
         function updateProfile(data) {
             var url = BASE_URL + "profile";
             return $http.post(url, data);
+        }
+
+        function removePhoto(data){
+            var url = BASE_URL + "outphoto";
+            return $http.delete(url, data);
         }
 
         return api;
